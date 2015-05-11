@@ -42,7 +42,7 @@ class Controller extends \yii\web\Controller
     public function actions()
     {
         return[
-            'resource' => [
+            'index' => [
                 'class' => 'dee\rest\RestAction',
             ]
         ];
