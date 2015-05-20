@@ -14,10 +14,6 @@ use yii\web\NotFoundHttpException;
  */
 trait BasicControllerTrait
 {
-    /**
-     * @var string
-     */
-    public $expandParam;
 
     /**
      * Lists all models.
@@ -53,6 +49,24 @@ trait BasicControllerTrait
             throw new NotFoundHttpException("Object not found: $id/$attr");
         }
         return $model;
+    }
+
+    /**
+     * Displays a single model.
+     * @param integer $id
+     * @return mixed
+     */
+    public function viewDetail($id, $field)
+    {
+        $model = $this->findModel($id);
+
+        $definition = array_merge($model->fields(), $model->extraFields());
+        if (isset($definition[$field])) {
+            return is_string($definition[$field]) ? $model->{$definition[$field]} : call_user_func($definition[$field], $model, $field);
+        } elseif (in_array($field, $definition)) {
+            return $model->$field;
+        }
+        throw new NotFoundHttpException("Object not found: $id/$field");
     }
 
     /**

@@ -19,10 +19,6 @@ trait AdvanceControllerTrait
 
     use GlobalTriggerTrait,
         TransactionTrait;
-    /**
-     * @var string
-     */
-    public $expandParam;
 
     /**
      * Lists all models.
@@ -50,16 +46,25 @@ trait AdvanceControllerTrait
     {
         $model = $this->findModel($id);
         $this->fire('view', [$model]);
-        if ($this->expandParam && ($attr = Yii::$app->request->getQueryParam($this->expandParam)) !== null) {
-            $definition = array_merge($model->fields(), $model->extraFields());
-            if (isset($definition[$attr])) {
-                return is_string($definition[$attr]) ? $model->{$definition[$attr]} : call_user_func($definition[$attr], $model, $attr);
-            } elseif (in_array($attr, $definition)) {
-                return $model->$attr;
-            }
-            throw new NotFoundHttpException("Object not found: $id/$attr");
-        }
         return $model;
+    }
+
+    /**
+     * Displays a single model.
+     * @param integer $id
+     * @return mixed
+     */
+    public function viewDetail($id, $field)
+    {
+        $model = $this->findModel($id);
+        $this->fire('viewDetail', [$model]);
+        $definition = array_merge($model->fields(), $model->extraFields());
+        if (isset($definition[$field])) {
+            return is_string($definition[$field]) ? $model->{$definition[$field]} : call_user_func($definition[$field], $model, $field);
+        } elseif (in_array($field, $definition)) {
+            return $model->$field;
+        }
+        throw new NotFoundHttpException("Object not found: $id/$field");
     }
 
     /**

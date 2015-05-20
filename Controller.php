@@ -26,6 +26,11 @@ class Controller extends \yii\web\Controller
     public $enableCsrfValidation = false;
 
     /**
+     * @var array
+     */
+    public $extraPatterns = [];
+
+    /**
      * @inheritdoc
      */
     public function init()
@@ -44,6 +49,7 @@ class Controller extends \yii\web\Controller
         return[
             'index' => [
                 'class' => 'dee\rest\RestAction',
+                'extraPatterns' => $this->extraPatterns,
             ]
         ];
     }
