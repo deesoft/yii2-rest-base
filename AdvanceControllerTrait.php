@@ -147,9 +147,12 @@ trait AdvanceControllerTrait
             foreach ($patchs as $patch) {
                 $this->doPatch($model, $patch);
             }
-            $this->fire('patch', [$model]);
+            $dirty = $model->getDirtyAttributes();
+            $olds = $model->getOldAttributes();
+            
+            $this->fire('patch', [$model, $dirty, $olds]);
             if ($model->save()) {
-                $this->fire('patched', [$model]);
+                $this->fire('patched', [$model, $dirty, $olds]);
                 $this->commit();
                 $model->refresh();
             } else {
